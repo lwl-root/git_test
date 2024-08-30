@@ -4,8 +4,6 @@
 
 centos7服务器使用nvm安装的node之后，只要使用npm或者node，均会出现以下问题。
 
-
-
 ```shell
 npm -v
 node: /lib64/libm.so.6: version `GLIBC_2.27' not found (required by node)
@@ -21,8 +19,6 @@ node: /lib64/libstdc++.so.6: version `GLIBCXX_3.4.21' not found (required by nod
 查看系统内安装的glibc版本
 然后再根据分析可得知 新版的node v18开始 都需要GLIBC_2.27支持，可是目前系统内却没有那么高的版本
 
-
-
 ```shell
  strings /lib64/libc.so.6 |grep GLIBC_
 GLIBC_2.2.5
@@ -36,8 +32,6 @@ GLIBC_2.17
 ### 更新glibc
 
 根据提示 安装所需要的glibc-2.28
-
-
 
 ```shell
 wget http://ftp.gnu.org/gnu/glibc/glibc-2.28.tar.gz
@@ -53,8 +47,6 @@ cd glibc-2.28/ && mkdir build  && cd build
 
 ##### make问题
 
-
-
 ```shell
 configure: error: 
 *** These critical programs are missing or too old: make bison compiler
@@ -62,8 +54,6 @@ configure: error:
 ```
 
 解决办法：升级gcc与make
-
-
 
 ```shell
 # 升级GCC(默认为4 升级为8)</span>
@@ -85,16 +75,12 @@ ln -sv /usr/local/make/bin/make /usr/bin/make
 
 这时 所有的问题 都已经解决完毕 再重新执行上一步 更新glibc即可
 
-
-
 ```shell
 cd /root/glibc-2.28/build
 ../configure --prefix=/usr --disable-profile --enable-add-ons --with-headers=/usr/include --with-binutils=/usr/bin
 ```
 
 ##### 我的依旧报错：bison太老旧
-
-
 
 ```shell
 configure: error: 
@@ -104,16 +90,12 @@ configure: error:
 
 看看我的bison版本多少
 
-
-
 ```shell
 bison -v
 -bash: bison: 未找到命令
 ```
 
 这时 所有的问题 真的真的都已经解决完毕 再重新执行上一步 更新glibc即可
-
-
 
 ```shell
 cd /root/glibc-2.28/build
@@ -127,15 +109,11 @@ yum install -y bison
 make 和 make install在linux中就是安装软件的意思 简单这么理解就好。
 这个过程较长，大约半小时左右，建议打一局游戏就好了。
 
-
-
 ```shell
 make && make install
 ```
 
 验证下 是不是好了
-
-
 
 ```shell
 npm -v
@@ -154,8 +132,6 @@ node: /lib64/libstdc++.so.6: version `GLIBCXX_3.4.21' not found (required by nod
 
 用下面命令查看
 
-
-
 ```shell
 strings /usr/lib64/libstdc++.so.6 | grep CXXABI
 ```
@@ -163,8 +139,6 @@ strings /usr/lib64/libstdc++.so.6 | grep CXXABI
 [![img](https://img2024.cnblogs.com/blog/1893152/202403/1893152-20240311203237858-1010753407.png)](https://img2024.cnblogs.com/blog/1893152/202403/1893152-20240311203237858-1010753407.png)
 
 更新libstdc++.so.6.0.26
-
-
 
 ```shell
 # 更新lib libstdc++.so.6.0.26
@@ -181,8 +155,6 @@ ln -snf ./libstdc++.so.6.0.26 libstdc++.so.6
 ```
 
 验证
-
-
 
 ```shell
 npm -v
